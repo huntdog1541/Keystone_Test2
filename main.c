@@ -5,20 +5,21 @@
 
 ks_engine *ks;
 ks_err err;
+size_t size;
+size_t count;
 
 static void clearContents(char * contents, size_t size);
+static void printValues(unsigned char * encoded);
 
 static unsigned char* get_encoded(const char * assembly)
 {
     unsigned char * encode;
-    size_t size;
-    size_t count;
 
     if(ks != NULL)
     {
         if(ks_asm(ks, assembly, 0, &encode, &size, &count))
         {
-            printf("ERROR: failed on ks_asm() with count = %lu, error code=%u, with %s \n", count, ks_error(ks), assembly);
+            printf("ERROR: failed on ks_asm() with count = %lu, error code=%u, with %s \n", count, ks_errno(ks), assembly);
             return NULL;
         }
         else
@@ -48,16 +49,17 @@ static int open_ks(ks_arch arch, int mode, int syntax)
     }
 
     if(syntax)
-        ks_options(ks, KS_OPT_SYNTAX, syntax);
+        ks_option(ks, KS_OPT_SYNTAX, syntax);
 }
 
 static char * getFileContents(char* fileName)
 {
+    printf("File: %s\n", fileName);
     FILE *fin = fopen(fileName, "r");
     if(fin == NULL)
     {
-        perror("Unable to open file!");
-        return -1;
+        perror("Unable to open input file!");
+        return NULL;
     }
     fseek(fin, 0, SEEK_END);
     size_t fsize = ftell(fin);
@@ -73,14 +75,14 @@ static char * getFileContents(char* fileName)
 
 static void getOutput(char * outputFile, char * inputContent)
 {
-    FILE * fout = fopen(outputFile, "r");
+    FILE * fout = fopen(outputFile, "w");
     if(fout == NULL)
     {
-        perror("Unable to open file");
+        perror("Unable to open output file");
         return;
     }
     unsigned char * encoded = get_encoded(inputContent);
-    fwrite(encoded, sizeof(char), sizeof(encoded), fout);
+    fwrite(encoded, sizeof(char), size, fout);
     fclose(fout);
 }
 
@@ -94,6 +96,7 @@ static void clearContents(char * contents, size_t size)
 }
 
 int main() {
+
     open_ks(KS_ARCH_X86, KS_MODE_64, KS_OPT_SYNTAX_INTEL);
     char * fileContents = getFileContents("test.txt");
     getOutput("test.bin", fileContents);
