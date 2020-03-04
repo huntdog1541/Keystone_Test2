@@ -10,8 +10,8 @@ if(APPLE)
     set(CMAKE_C_COMPILER "/usr/local/bin/gcc")
 
     include_directories("/usr/local/include")
-    target_link_libraries(unicorn_test1 LINK_PUBLIC "/usr/local/lib")
+    target_link_libraries(Keystone_Test2 LINK_PUBLIC "/usr/local/lib")
 
-    add_library(libkeystone STATIC IMPORTED)
-    set_property(TARGET libkeystone PROPERTY IMPORTED_LOCATION "/usr/local/lib/libkeystone.a")
+    # add_library(libkeystone STATIC IMPORTED)
+    # set_property(TARGET libkeystone PROPERTY IMPORTED_LOCATION "/usr/local/lib/libkeystone.a")
 endif(APPLE)
