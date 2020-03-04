@@ -98,7 +98,7 @@ static void clearContents(char * contents, size_t size)
 int main() {
 
     open_ks(KS_ARCH_X86, KS_MODE_64, KS_OPT_SYNTAX_INTEL);
-    char * fileContents = getFileContents("test.txt");
+    char * fileContents = getFileContents("/Users/dwhunt/CLionProjects/Keystone_Test2/test.txt");
     getOutput("test.bin", fileContents);
     return 0;
 }
